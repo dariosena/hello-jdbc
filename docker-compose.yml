@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:13.1
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres" ]
+      timeout: 15s
+      interval: 3s
+      retries: 10
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - APP_DB_USER=jdbcuser
+      - APP_DB_PASS=jdbcpass
+      - APP_DB_NAME=ecommerce
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/
+      - ./scripts/01-init.sh:/01-init.sh
+    ports:
+      - 5432:5432
